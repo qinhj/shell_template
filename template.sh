@@ -83,13 +83,10 @@ done
 ## run command
 case $COMMAND in
     usage)
-        Usage
-        ;;
+        Usage;;
     test)
-        Test
-        ;;
+        Test;;
     *)
         echo "[Error ] Unknown Command: $COMMAND"
-        Usage
-        ;;
+        Usage;;
 esac
