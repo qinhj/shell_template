@@ -8,6 +8,7 @@
 # @Note:    To use "getopts" "let", we need bash.
 # ------------------------------------------------------------------
 # @History:
+# 2020/02/29 v0.1.1 optimize(title, error code, ...)
 # 2020/02/27 v0.1.0 optimize(color, ...)
 # 2020/02/19 v0.0.0 init/create
 ####################################################################
@@ -20,7 +21,7 @@
 PATH=.:$PATH
 set -e # -ex
 ## script version
-VERSION=0.1.0
+VERSION=0.1.1
 ## script options
 COMMANDS="usage test"
 COMMENTS="<command> [options]"
@@ -52,6 +53,10 @@ EchoSection() {
   echo -e "\033[33m$@\033[0m"
 }
 
+ShowTitle() {
+  EchoTitle "Shell Script Template [Version: $VERSION]"
+}
+
 ShowUsage() {
   EchoSection "Usage:"
   echo "  $0 $COMMENTS"
@@ -74,14 +79,35 @@ ShowExample() {
   echo "  $0 $EXAMPLE1"
 }
 
+ShowNotes() {
+  EchoSection "Note:"
+  echo "1. ..."
+}
+
+## Error Code ##
+## 101: miss/invalid parameter
+## 102: open/close file fail
+ErrorHandle() {
+  #echo "[Debug ] Error Code: $1"
+  case $1 in
+    1)    ## command not defined
+      EchoError "Unknown Command: $COMMAND" && usage;;
+    127)  ## command not found
+      usage;;
+    *)    ## do nothing
+      ;;
+  esac
+}
+
 #### Public Function ####
 
 usage() {
-  EchoTitle "Shell Script Template [Version: $VERSION]"
+  ShowTitle
   ShowUsage
   ShowCommand
   ShowOptions
   ShowExample
+  #ShowNotes
 }
 
 test() {
@@ -124,9 +150,4 @@ shift $(($OPTIND - 1))
 #echo "[Debug ] remain opt: $@"
 
 ## run command
-if [[ $COMMANDS =~ $COMMAND ]]; then
-  $COMMAND $@
-else
-  EchoError "Unknown Command: $COMMAND"
-  usage
-fi
+([[ $COMMANDS =~ $COMMAND ]] && $COMMAND) || (ErrorHandle $?)
