@@ -111,7 +111,7 @@ usage() {
 }
 
 test() {
-  echo "[ Test ] Start: $@"
+  echo "[ Test ] Start, args: $@"
   echo "[ Test ] $MESSAGE"
   echo "[ Test ] Finish."
 }
@@ -150,4 +150,4 @@ shift $(($OPTIND - 1))
 #echo "[Debug ] remain opt: $@"
 
 ## run command
-([[ $COMMANDS =~ $COMMAND ]] && $COMMAND) || (ErrorHandle $?)
+([[ $COMMANDS =~ $COMMAND ]] && $COMMAND $@) || (ErrorHandle $?)
